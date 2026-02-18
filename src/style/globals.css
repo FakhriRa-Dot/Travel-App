@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --font-body: var(--font-noto-sans);
+  --font-heading: var(--font-yeseva-one);
+}
+
+@layer utilities {
+  .bg-primary {
+    background-color: #f5f8f9;
+  }
+
+  .bg-bluebaby {
+    background-color: #93bfcf;
+  }
+
+  .text-standard {
+    color: #6096b4;
+  }
+
+  .text-bluebaby {
+    color: #93bfcf;
+  }
+
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+}
+
+@theme {
+  --color-primary: #f5f8f9;
+  --color-standard: #6096b4;
+  --color-bluebaby: #93bfcf;
+}
+
+@layer base {
+  body {
+    @apply bg-primary;
+    font-family: var(--font-body);
+  }
+}
