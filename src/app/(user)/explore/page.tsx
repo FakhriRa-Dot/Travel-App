@@ -3,10 +3,16 @@ import ActivityCard from "./_components/activityCard";
 import FilterSidebar from "./_components/filterSidebar";
 
 export default async function ExplorePage() {
-  const activities = await getActivities();
+  let activities = [];
+
+  try {
+    activities = await getActivities();
+  } catch (error) {
+    console.error("Failed to fetch activities");
+  }
 
   return (
-    <main className="flex gap-10 px-16 py-10 ">
+    <main className="flex gap-10 px-16 py-10">
       <FilterSidebar />
 
       <section className="px-6 flex-1">
@@ -16,9 +22,13 @@ export default async function ExplorePage() {
         </div>
 
         <div className="grid grid-cols-4 gap-6">
-          {activities.map((activity) => (
-            <ActivityCard key={activity.id} activity={activity} />
-          ))}
+          {activities.length === 0 ? (
+            <p>No activities found</p>
+          ) : (
+            activities.map((activity: any) => (
+              <ActivityCard key={activity.id} activity={activity} />
+            ))
+          )}
         </div>
       </section>
     </main>

@@ -1,16 +1,9 @@
-import { Activity } from "@/types/activity";
+import { fetchWithAuth } from "@/lib/fetcher";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = "https://travel-journal-api-bootcamp.do.dibimbing.id";
 
-export async function getActivities(): Promise<Activity[]> {
-  const res = await fetch(`${BASE_URL}/api/v1/activities`, {
-    cache: "no-store",
-  });
+export async function getActivities() {
+  const data = await fetchWithAuth(`${BASE_URL}/api/v1/activities`);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch activities");
-  }
-
-  const json = await res.json();
-  return json.data;
+  return data.data;
 }

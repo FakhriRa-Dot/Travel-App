@@ -1,9 +1,5 @@
-import HeroSection from "./section/heroSect";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <main>
-      <HeroSection />
-    </main>
-  );
+  redirect("/login");
 }
