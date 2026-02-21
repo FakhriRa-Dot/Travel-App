@@ -1,6 +1,6 @@
 "use client";
 
-import { JSX, ReactNode } from "react";
+import { ChangeEvent, JSX, ReactNode } from "react";
 
 type AuthInputProps = {
   label: string;
@@ -8,6 +8,8 @@ type AuthInputProps = {
   placeholder?: string;
   rightIcon?: ReactNode;
   leftIcon?: ReactNode;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function AuthInput({
@@ -16,6 +18,8 @@ export default function AuthInput({
   placeholder,
   rightIcon,
   leftIcon,
+  value,
+  onChange,
 }: AuthInputProps): JSX.Element {
   return (
     <div className="mb-4">
@@ -31,6 +35,8 @@ export default function AuthInput({
         <input
           type={type}
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
           className={`w-full py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400
           ${leftIcon ? "pl-10" : "pl-4"} ${rightIcon ? "pr-10" : "pr-4"}`}
         />

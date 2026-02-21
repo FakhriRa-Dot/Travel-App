@@ -1,9 +1,35 @@
-import { fetchWithAuth } from "@/lib/fetcher";
-
-const BASE_URL = "https://travel-journal-api-bootcamp.do.dibimbing.id";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 export async function getActivities() {
-  const data = await fetchWithAuth(`${BASE_URL}/api/v1/activities`);
+  const res = await fetch(`${BASE_URL}/api/v1/activities`, {
+    headers: {
+      apiKey: API_KEY as string,
+    },
+    cache: "no-store",
+  });
 
-  return data.data;
+  if (!res.ok) {
+    throw new Error("Failed to fetch activities");
+  }
+
+  const json = await res.json();
+
+  return json.data;
+}
+
+export async function getActivityById(id: string) {
+  const res = await fetch(`${BASE_URL}/api/v1/activity/${id}`, {
+    headers: {
+      apiKey: API_KEY as string,
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch activity detail");
+  }
+
+  const json = await res.json();
+  return json.data;
 }
