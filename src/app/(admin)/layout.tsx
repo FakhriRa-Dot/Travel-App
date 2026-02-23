@@ -1,5 +1,6 @@
 "use client";
 
+import NavbarUser from "@/components/navbar/NavbarUser";
 import { useAuthGuard } from "@/hooks/AuthGuard";
 
 export default function UserLayout({
@@ -7,6 +8,14 @@ export default function UserLayout({
 }: {
   children: React.ReactNode;
 }) {
-  useAuthGuard("admin");
-  return <>{children}</>;
+  const authorized = useAuthGuard("admin");
+
+  if (!authorized) return null;
+
+  return (
+    <>
+      <NavbarUser />
+      {children}
+    </>
+  );
 }

@@ -34,9 +34,14 @@ export default function LoginForm(): JSX.Element {
 
       const token = json.token;
       const role = json.data.role;
+      const profileImg = json.data.profilePictureUrl;
+      const name = json.data.name;
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("profilePictureUrl", profileImg);
+      localStorage.setItem("name", name);
+      localStorage.setItem("user", JSON.stringify(json.data));
 
       if (role === "admin") {
         router.push("/homeAdmin");

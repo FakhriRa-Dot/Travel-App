@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export function useAuthGuard(requiredRole?: "user" | "admin") {
   const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,6 +18,11 @@ export function useAuthGuard(requiredRole?: "user" | "admin") {
 
     if (requiredRole && role !== requiredRole) {
       router.replace("/login");
+      return;
     }
+
+    setAuthorized(true);
   }, [requiredRole, router]);
+
+  return authorized;
 }
