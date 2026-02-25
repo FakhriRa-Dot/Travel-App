@@ -8,9 +8,7 @@ export default function UserLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const authorized = useAuthGuard("user");
-
-  if (!authorized) return null;
+  useAuthGuard("user");
 
   return (
     <>

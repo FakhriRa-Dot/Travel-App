@@ -1,6 +1,7 @@
 "use client";
 
-import NavbarUser from "@/components/navbar/NavbarUser";
+import NavbarAdmin from "@/components/navbar/NavbarAdmin";
+import SidebarAdmin from "@/components/sidebar/SidebarAdmin";
 import { useAuthGuard } from "@/hooks/AuthGuard";
 
 export default function UserLayout({
@@ -8,14 +9,16 @@ export default function UserLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const authorized = useAuthGuard("admin");
-
-  if (!authorized) return null;
-
+  useAuthGuard("admin");
   return (
-    <>
-      <NavbarUser />
-      {children}
-    </>
+    <div className="min-h-screen bg-gray-100 flex">
+      <SidebarAdmin />
+
+      <div className="flex-1 flex flex-col">
+        <NavbarAdmin />
+
+        <main className="flex-1 p-8 bg-gray-50">{children}</main>
+      </div>
+    </div>
   );
 }
