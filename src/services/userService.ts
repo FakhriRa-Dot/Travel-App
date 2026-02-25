@@ -36,3 +36,28 @@ export async function deleteUser(id: string) {
 
   return res.json();
 }
+
+export async function updateUserRole(id: string, role: "admin" | "user") {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/update-user-role/${id}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apiKey: process.env.NEXT_PUBLIC_API_KEY!,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ role }),
+    },
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to update user role");
+  }
+
+  return data;
+}

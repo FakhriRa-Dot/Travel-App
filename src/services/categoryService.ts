@@ -15,3 +15,43 @@ export async function getCategories() {
 
   return res.json();
 }
+
+export async function createCategory(data: { name: string; imageUrl: string }) {
+  const res = await fetch(`${BASE_URL}/api/v1/create-category`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apiKey: API_KEY as string,
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+export async function updateCategory(
+  id: string,
+  data: { name: string; imageUrl: string },
+) {
+  const res = await fetch(`${BASE_URL}/api/v1/update-category/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apiKey: API_KEY as string,
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+export async function deleteCategory(id: string) {
+  const res = await fetch(`${BASE_URL}/api/v1/delete-category/${id}`, {
+    method: "DELETE",
+    headers: {
+      apiKey: API_KEY as string,
+    },
+  });
+
+  return res.json();
+}

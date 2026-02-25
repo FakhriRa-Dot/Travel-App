@@ -1,66 +1,83 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getCategories } from "@/services/categoryService";
+import { useEffect, useMemo, useState } from "react";
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  updateCategory,
+} from "@/services/categoryService";
 import { Category } from "@/types/activity";
-
-function getPaginationPages(totalPages: number, currentPage: number) {
-  const pages: (number | string)[] = [];
-
-  if (totalPages <= 5) {
-    return Array.from({ length: totalPages }, (_, i) => i + 1);
-  }
-
-  pages.push(1);
-
-  if (currentPage > 3) {
-    pages.push("...");
-  }
-
-  const start = Math.max(2, currentPage - 1);
-  const end = Math.min(totalPages - 1, currentPage + 1);
-
-  for (let i = start; i <= end; i++) {
-    pages.push(i);
-  }
-
-  if (currentPage < totalPages - 2) {
-    pages.push("...");
-  }
-
-  pages.push(totalPages);
-
-  return pages;
-}
+import Pagination from "@/components/common/Pagination";
 
 export default function ManageCategoryPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
 
+  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await getCategories();
-        setCategories(res.data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  );
 
-    fetchData();
+  const [name, setName] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const res = await getCategories();
+      setCategories(res.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
   }, []);
 
-  // 🔥 Manual Pagination Logic
-  const totalPages = Math.ceil(categories.length / itemsPerPage);
+  const processedData = useMemo(() => {
+    return categories
+      .filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
+      .filter(() => {
+        if (statusFilter === "all") return true;
+        return true; // sementara semua dianggap active
+      })
+      .sort((a, b) => {
+        if (sortBy === "az") return a.name.localeCompare(b.name);
+        if (sortBy === "za") return b.name.localeCompare(a.name);
+        if (sortBy === "newest") {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+        return 0;
+      });
+  }, [categories, search, sortBy, statusFilter]);
+
+  const totalPages = Math.ceil(processedData.length / itemsPerPage);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedData = categories.slice(startIndex, endIndex);
+
+  const paginatedData = processedData.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage]);
 
   return (
     <div className="space-y-8">
@@ -69,7 +86,14 @@ export default function ManageCategoryPage() {
           Manage Categories
         </h1>
 
-        <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition">
+        <button
+          onClick={() => {
+            setIsCreateOpen(true);
+            setName("");
+            setImageUrl("");
+          }}
+          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition"
+        >
           <Plus size={18} />
           Create New Category
         </button>
@@ -78,17 +102,39 @@ export default function ManageCategoryPage() {
       <div className="bg-white border rounded-2xl p-6 shadow-sm flex items-center gap-4">
         <input
           type="text"
-          placeholder="Search user by name or email ..."
+          placeholder="Search category..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setCurrentPage(1);
+          }}
           className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <button className="px-4 py-2 border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">
-          STATUS : ALL
-        </button>
+        <select
+          value={statusFilter}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="px-4 py-2 border rounded-lg text-sm font-medium text-gray-600"
+        >
+          <option value="all">STATUS : ALL</option>
+          <option value="active">STATUS : ACTIVE</option>
+        </select>
 
-        <button className="px-4 py-2 border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">
-          SORT BY : MOST TOURS
-        </button>
+        <select
+          value={sortBy}
+          onChange={(e) => {
+            setSortBy(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="px-4 py-2 border rounded-lg text-sm font-medium text-gray-600"
+        >
+          <option value="newest">SORT : NEWEST</option>
+          <option value="az">SORT : A-Z</option>
+          <option value="za">SORT : Z-A</option>
+        </select>
       </div>
 
       <div className="bg-white border rounded-2xl shadow-sm overflow-hidden">
@@ -96,8 +142,7 @@ export default function ManageCategoryPage() {
           <thead className="bg-gray-50 text-gray-600">
             <tr>
               <th className="text-left px-6 py-4">CATEGORY NAME</th>
-              <th className="text-left px-6 py-4">DESCRIPTION</th>
-              <th className="text-left px-6 py-4">TOUR COUNT</th>
+              <th className="text-left px-6 py-4">CREATED</th>
               <th className="text-left px-6 py-4">STATUS</th>
               <th className="text-left px-6 py-4">ACTION</th>
             </tr>
@@ -106,16 +151,19 @@ export default function ManageCategoryPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td className="px-6 py-4" colSpan={5}>
+                <td colSpan={4} className="px-6 py-4">
                   Loading...
+                </td>
+              </tr>
+            ) : paginatedData.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="px-6 py-4 text-center">
+                  No data found
                 </td>
               </tr>
             ) : (
               paginatedData.map((item) => (
-                <tr
-                  key={item.id}
-                  className="border-t hover:bg-gray-50 transition"
-                >
+                <tr key={item.id} className="border-t hover:bg-gray-50">
                   <td className="px-6 py-4 flex items-center gap-3">
                     <img
                       src={item.imageUrl}
@@ -127,89 +175,144 @@ export default function ManageCategoryPage() {
                     </span>
                   </td>
 
-                  <td className="px-6 py-4 text-gray-600 max-w-xs truncate">
-                    Created: {new Date(item.createdAt).toLocaleDateString()}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">
-                      -
-                    </span>
+                  <td className="px-6 py-4 text-gray-600">
+                    {new Date(item.createdAt).toLocaleDateString()}
                   </td>
 
                   <td className="px-6 py-4 text-blue-600 font-medium">
                     Active
                   </td>
 
-                  <td className="px-6 py-4 text-gray-500">...</td>
+                  <td className="px-6 py-4 flex gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedCategory(item);
+                        setName(item.name);
+                        setImageUrl(item.imageUrl);
+                        setIsEditOpen(true);
+                      }}
+                      className="text-blue-600"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={async () => {
+                        if (confirm("Are you sure?")) {
+                          await deleteCategory(item.id);
+                          fetchCategories();
+                        }
+                      }}
+                      className="text-red-600"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
 
-        {/* 🔥 Pagination */}
         <div className="flex justify-between items-center px-6 py-4 border-t text-sm text-gray-500">
           <p>
             Page {currentPage} of {totalPages || 1}
           </p>
 
-          <div className="flex gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              Previous
-            </button>
-
-            {getPaginationPages(totalPages, currentPage).map((page, index) =>
-              page === "..." ? (
-                <span key={index} className="px-2">
-                  ...
-                </span>
-              ) : (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(page as number)}
-                  className={`px-3 py-1 border rounded ${
-                    currentPage === page ? "bg-blue-600 text-white" : "bg-white"
-                  }`}
-                >
-                  {page}
-                </button>
-              ),
-            )}
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white border rounded-2xl p-8 shadow-sm">
-          <p className="text-sm text-gray-400 uppercase tracking-wide">
-            Total Categories
-          </p>
-          <h2 className="text-4xl font-bold text-blue-800 mt-4">
-            {categories.length}
-          </h2>
-        </div>
+      {isCreateOpen && (
+        <Modal
+          title="Create Category"
+          onClose={() => setIsCreateOpen(false)}
+          onSubmit={async () => {
+            await createCategory({ name, imageUrl });
+            fetchCategories();
+            setIsCreateOpen(false);
+          }}
+          name={name}
+          imageUrl={imageUrl}
+          setName={setName}
+          setImageUrl={setImageUrl}
+          submitLabel="Save"
+        />
+      )}
 
-        <div className="bg-white border rounded-2xl p-8 shadow-sm">
-          <p className="text-sm text-gray-400 uppercase tracking-wide">
-            Most Popular
-          </p>
-          <h2 className="text-4xl font-bold text-blue-800 mt-4">
-            {categories[0]?.name || "-"}
-          </h2>
+      {isEditOpen && selectedCategory && (
+        <Modal
+          title="Edit Category"
+          onClose={() => setIsEditOpen(false)}
+          onSubmit={async () => {
+            await updateCategory(selectedCategory.id, { name, imageUrl });
+            fetchCategories();
+            setIsEditOpen(false);
+          }}
+          name={name}
+          imageUrl={imageUrl}
+          setName={setName}
+          setImageUrl={setImageUrl}
+          submitLabel="Update"
+        />
+      )}
+    </div>
+  );
+}
+
+type ModalProps = {
+  title: string;
+  onClose: () => void;
+  onSubmit: () => void;
+  name: string;
+  imageUrl: string;
+  setName: React.Dispatch<React.SetStateAction<string>>;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+  submitLabel: string;
+};
+
+function Modal({
+  title,
+  onClose,
+  onSubmit,
+  name,
+  imageUrl,
+  setName,
+  setImageUrl,
+  submitLabel,
+}: ModalProps) {
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-xl w-96 space-y-4">
+        <h2 className="text-lg font-semibold">{title}</h2>
+
+        <input
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full border px-3 py-2 rounded"
+        />
+
+        <input
+          placeholder="Image URL"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          className="w-full border px-3 py-2 rounded"
+        />
+
+        <div className="flex justify-end gap-2">
+          <button onClick={onClose}>Cancel</button>
+
+          <button
+            onClick={onSubmit}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            {submitLabel}
+          </button>
         </div>
       </div>
     </div>
