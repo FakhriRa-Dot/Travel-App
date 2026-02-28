@@ -13,7 +13,9 @@ export async function getCategories() {
     throw new Error("Failed to fetch categories");
   }
 
-  return res.json();
+  const json = await res.json();
+
+  return json.data;
 }
 
 export async function createCategory(data: { name: string; imageUrl: string }) {

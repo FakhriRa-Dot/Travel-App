@@ -1,8 +1,21 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
-export async function getActivities() {
-  const res = await fetch(`${BASE_URL}/api/v1/activities`, {
+type ActivityFilters = {
+  maxPrice?: number;
+  rating?: number;
+  categoryId?: string;
+};
+
+export async function getActivities(filters?: ActivityFilters) {
+  let url = `${BASE_URL}/api/v1/activities`;
+
+  // 🔥 Kalau ada kategori → pakai endpoint category
+  if (filters?.categoryId) {
+    url = `${BASE_URL}/api/v1/activities-by-category/${filters.categoryId}`;
+  }
+
+  const res = await fetch(url, {
     headers: {
       apiKey: API_KEY as string,
     },
@@ -14,7 +27,6 @@ export async function getActivities() {
   }
 
   const json = await res.json();
-
   return json.data;
 }
 
