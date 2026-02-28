@@ -25,10 +25,9 @@ export default async function BannerSection() {
               key={banner.id}
               className="relative h-64 rounded-3xl overflow-hidden"
             >
-              <Image
+              <img
                 src={banner.imageUrl}
                 alt={banner.name}
-                fill
                 className="object-cover"
               />
 

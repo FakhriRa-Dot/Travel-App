@@ -17,13 +17,12 @@ export default function SidebarAdmin() {
 
   const menus = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { name: "Manage Users", href: "/admin/users", icon: Users },
-    { name: "Manage Category", href: "/admin/category", icon: Folder },
-    { name: "Manage Activity", href: "/admin/activity", icon: Tag },
-    { name: "Manage Promo", href: "/admin/promo", icon: Tag },
-    { name: "Manage Banner", href: "/admin/banner", icon: Image },
-    { name: "Manage Payment Method", href: "/admin/payment", icon: CreditCard },
-    { name: "Manage Transaction", href: "/admin/transaction", icon: Receipt },
+    { name: "Manage Users", href: "/users", icon: Users },
+    { name: "Manage Category", href: "/category", icon: Folder },
+    { name: "Manage Activity", href: "/activity", icon: Tag },
+    { name: "Manage Promo", href: "/promoAdmin", icon: Tag },
+    { name: "Manage Banner", href: "/banner", icon: Image },
+    { name: "Manage Transaction", href: "/transactionAdmin", icon: Receipt },
   ];
 
   return (

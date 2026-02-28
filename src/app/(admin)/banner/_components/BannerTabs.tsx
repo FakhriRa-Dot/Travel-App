@@ -1,25 +1,27 @@
 "use client";
 
-export default function BannerTabs() {
-  const tabs = [
-    "All Banners (12)",
-    "Active (5)",
-    "Scheduled (3)",
-    "Drafts (4)",
-  ];
+type Props = {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  total: number;
+};
+
+export default function BannerTabs({ activeTab, setActiveTab, total }: Props) {
+  const tabs = ["All", "Active"];
 
   return (
     <div className="border-b flex gap-8 text-sm font-medium">
-      {tabs.map((tab, i) => (
+      {tabs.map((tab) => (
         <button
           key={tab}
+          onClick={() => setActiveTab(tab)}
           className={`pb-3 ${
-            i === 0
+            activeTab === tab
               ? "text-blue-600 border-b-2 border-blue-600"
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
-          {tab}
+          {tab} ({total})
         </button>
       ))}
     </div>

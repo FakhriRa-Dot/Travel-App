@@ -87,7 +87,9 @@ export default function NavbarUser() {
           className="flex items-center text-standard gap-4 relative"
           ref={dropdownRef}
         >
-          <ShoppingCart className="cursor-pointer" />
+          <Link href="/cart">
+            <ShoppingCart className="cursor-pointer" />
+          </Link>
 
           {profilePicture && (
             <div className="relative">

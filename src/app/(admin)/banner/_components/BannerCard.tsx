@@ -1,7 +1,7 @@
 import { Pencil, Trash } from "lucide-react";
-import Image from "next/image";
 
 type Props = {
+  id: string;
   status: "ACTIVE" | "SCHEDULED" | "DRAFT";
   title: string;
   path: string;
@@ -9,9 +9,12 @@ type Props = {
   visibility: string;
   schedule: string;
   image: string;
+  onDelete: (id: string) => void;
+  onEdit: () => void;
 };
 
 export default function BannerCard({
+  id,
   status,
   title,
   path,
@@ -19,6 +22,8 @@ export default function BannerCard({
   visibility,
   schedule,
   image,
+  onDelete,
+  onEdit,
 }: Props) {
   const statusColor = {
     ACTIVE: "bg-green-100 text-green-700",
@@ -29,12 +34,7 @@ export default function BannerCard({
   return (
     <div className="flex bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
       <div className="w-64 relative">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          className="h-full w-full object-cover"
-        />
+        <img src={image} alt={title} className="object-cover" />
 
         <span
           className={`absolute top-4 left-4 px-3 py-1 text-xs font-medium rounded-full ${statusColor[status]}`}
@@ -65,8 +65,16 @@ export default function BannerCard({
         </div>
 
         <div className="flex justify-end gap-4 mt-6 text-gray-500">
-          <Pencil size={18} className="cursor-pointer hover:text-blue-600" />
-          <Trash size={18} className="cursor-pointer hover:text-red-600" />
+          <Pencil
+            size={18}
+            onClick={onEdit}
+            className="cursor-pointer hover:text-blue-600"
+          />
+          <Trash
+            size={18}
+            onClick={() => onDelete(id)}
+            className="cursor-pointer hover:text-red-600"
+          />
         </div>
       </div>
     </div>

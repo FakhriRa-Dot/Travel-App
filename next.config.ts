@@ -37,6 +37,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "akcdn.detik.net.id",
       },
+      {
+        protocol: "https",
+        hostname: "dibimbing-cdn.sgp1.cdn.digitaloceanspaces.com",
+      },
     ],
   },
 };
