@@ -5,12 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 import { getPromoById, updatePromo } from "@/services/promoService";
 
 export default function EditPromoPage() {
-  const { id } = useParams();
+  const params = useParams();
   const router = useRouter();
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") || "" : "";
+  const id = typeof params.id === "string" ? params.id : "";
 
+  const [token, setToken] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
@@ -24,9 +24,23 @@ export default function EditPromoPage() {
   });
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+
+    if (!storedToken) {
+      router.push("/login");
+      return;
+    }
+
+    setToken(storedToken);
+  }, [router]);
+
+  useEffect(() => {
+    if (!token || !id) return;
+
     async function fetchPromo() {
       try {
-        const data = await getPromoById(id as string, token);
+        const data = await getPromoById(id, token);
+
         setForm({
           title: data.title,
           description: data.description,
@@ -37,14 +51,16 @@ export default function EditPromoPage() {
           minimum_claim_price: data.minimum_claim_price,
         });
       } catch (error) {
-        console.error(error);
+        console.error("Fetch promo error:", error);
+        localStorage.removeItem("token");
+        router.push("/login");
       } finally {
         setLoading(false);
       }
     }
 
     fetchPromo();
-  }, [id, token]);
+  }, [id, token, router]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -63,16 +79,27 @@ export default function EditPromoPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    if (!token || !id) {
+      router.push("/login");
+      return;
+    }
+
     try {
-      await updatePromo(id as string, form, token);
+      await updatePromo(id, form, token);
       alert("Promo updated successfully");
-      router.push("/promo");
+      router.push("/promoAdmin");
     } catch (error) {
       alert("Failed to update promo");
     }
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow">
@@ -93,7 +120,7 @@ export default function EditPromoPage() {
           value={form.promo_code}
           onChange={handleChange}
           placeholder="Promo Code"
-          className="w-full border rounded-lg px-4 py-2"
+          className="w-full border rounded-lg px-4 py-2 uppercase"
           required
         />
 

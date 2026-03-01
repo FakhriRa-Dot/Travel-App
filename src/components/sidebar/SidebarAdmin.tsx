@@ -1,19 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
   Folder,
   Tag,
   Image,
-  CreditCard,
   Receipt,
+  LogOut,
 } from "lucide-react";
 
 export default function SidebarAdmin() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const menus = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -24,6 +25,11 @@ export default function SidebarAdmin() {
     { name: "Manage Banner", href: "/banner", icon: Image },
     { name: "Manage Transaction", href: "/transactionAdmin", icon: Receipt },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
 
   return (
     <aside className="w-64 bg-white border-r border-gray-200 flex flex-col justify-between">
@@ -59,12 +65,20 @@ export default function SidebarAdmin() {
         </nav>
       </div>
 
+      {/* Bottom Section */}
       <div className="p-4 border-t">
         <div className="flex items-center justify-between">
           <div>
             <p className="font-medium text-sm">Exploria</p>
             <p className="text-xs text-gray-500">Admin</p>
           </div>
+
+          <button
+            onClick={handleLogout}
+            className="p-2 rounded-lg hover:bg-red-100 text-gray-500 hover:text-red-600 transition"
+          >
+            <LogOut size={18} />
+          </button>
         </div>
       </div>
     </aside>

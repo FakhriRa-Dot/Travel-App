@@ -19,11 +19,14 @@ export async function getCategories() {
 }
 
 export async function createCategory(data: { name: string; imageUrl: string }) {
+  const token = localStorage.getItem("token");
+
   const res = await fetch(`${BASE_URL}/api/v1/create-category`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       apiKey: API_KEY as string,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -35,11 +38,14 @@ export async function updateCategory(
   id: string,
   data: { name: string; imageUrl: string },
 ) {
+  const token = localStorage.getItem("token");
+
   const res = await fetch(`${BASE_URL}/api/v1/update-category/${id}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       apiKey: API_KEY as string,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -48,10 +54,13 @@ export async function updateCategory(
 }
 
 export async function deleteCategory(id: string) {
+  const token = localStorage.getItem("token");
+
   const res = await fetch(`${BASE_URL}/api/v1/delete-category/${id}`, {
     method: "DELETE",
     headers: {
       apiKey: API_KEY as string,
+      Authorization: `Bearer ${token}`,
     },
   });
 

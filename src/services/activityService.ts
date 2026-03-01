@@ -10,7 +10,6 @@ type ActivityFilters = {
 export async function getActivities(filters?: ActivityFilters) {
   let url = `${BASE_URL}/api/v1/activities`;
 
-  // 🔥 Kalau ada kategori → pakai endpoint category
   if (filters?.categoryId) {
     url = `${BASE_URL}/api/v1/activities-by-category/${filters.categoryId}`;
   }
@@ -47,11 +46,14 @@ export async function getActivityById(id: string) {
 }
 
 export async function createActivity(data: any) {
+  const token = localStorage.getItem("token");
+
   const res = await fetch(`${BASE_URL}/api/v1/create-activity`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       apiKey: API_KEY as string,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -60,11 +62,14 @@ export async function createActivity(data: any) {
 }
 
 export async function updateActivity(id: string, data: any) {
+  const token = localStorage.getItem("token");
+
   const res = await fetch(`${BASE_URL}/api/v1/update-activity/${id}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       apiKey: API_KEY as string,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -73,10 +78,13 @@ export async function updateActivity(id: string, data: any) {
 }
 
 export async function deleteActivity(id: string) {
+  const token = localStorage.getItem("token");
+
   const res = await fetch(`${BASE_URL}/api/v1/delete-activity/${id}`, {
     method: "DELETE",
     headers: {
       apiKey: API_KEY as string,
+      Authorization: `Bearer ${token}`,
     },
   });
 

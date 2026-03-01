@@ -33,7 +33,7 @@ export default function HeroSection() {
           </p>
         </div>
 
-        <div className="mt-24 flex justify-center">
+        {/* <div className="mt-24 flex justify-center">
           <div className="w-full flex items-center justify-between bg-white rounded-3xl shadow-2xl px-8 py-6 max-w-6xl">
             <div className="flex items-center gap-4 flex-2">
               <MapPin />
@@ -44,16 +44,6 @@ export default function HeroSection() {
               />
             </div>
 
-            {/* <div className="flex items-center flex-1 gap-3">
-              <Calendar />
-              <DatePicker
-                selected={startDate}
-                onChange={(date: Date | null) => setStartDate(date)}
-                placeholderText="Select Date"
-                className="w-full outline-none text-standard  placeholder:text-standard"
-                dateFormat="dd/mm/yyyy"
-              />
-            </div> */}
 
             <div className="flex items-center flex-1 gap-3">
               <Users />
@@ -69,7 +59,7 @@ export default function HeroSection() {
           <button className="bg-standard ml-6 hover:bg-bluebaby transition text-white font-semibold px-8 py-4 rounded-3xl flex items-center gap-2">
             <Search /> <span>SEARCH</span>
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

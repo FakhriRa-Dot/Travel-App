@@ -1,7 +1,7 @@
 export default function HomeAdmin() {
   return (
     <main>
-      <div>Wleee</div>
+      <div>Dashboard</div>
     </main>
   );
 }

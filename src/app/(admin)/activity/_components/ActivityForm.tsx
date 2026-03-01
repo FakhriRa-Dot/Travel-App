@@ -28,9 +28,15 @@ export default function ActivityForm({
 
   useEffect(() => {
     async function fetchCategories() {
-      const res = await getCategories();
-      setCategories(res.data ?? []);
+      try {
+        const data = await getCategories();
+        setCategories(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        setCategories([]);
+      }
     }
+
     fetchCategories();
   }, []);
 

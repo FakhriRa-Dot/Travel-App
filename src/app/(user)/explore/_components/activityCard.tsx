@@ -19,9 +19,9 @@ export default function ActivityCard({ activity }: Props) {
           className="object-cover w-full h-full"
         />
 
-        <div className="absolute top-3 right-3 bg-white p-2 rounded-full">
+        {/* <div className="absolute top-3 right-3 bg-white p-2 rounded-full">
           <Heart />
-        </div>
+        </div> */}
       </div>
 
       <div className="p-4">

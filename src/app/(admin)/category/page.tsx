@@ -34,10 +34,11 @@ export default function ManageCategoryPage() {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const res = await getCategories();
-      setCategories(res.data);
+      const data = await getCategories();
+      setCategories(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching categories:", error);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,7 @@ export default function ManageCategoryPage() {
       .filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
       .filter(() => {
         if (statusFilter === "all") return true;
-        return true; // sementara semua dianggap active
+        return true;
       })
       .sort((a, b) => {
         if (sortBy === "az") return a.name.localeCompare(b.name);

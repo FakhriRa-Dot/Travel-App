@@ -29,20 +29,24 @@ export async function deletePromo(id: string, token: string) {
   if (!res.ok) throw new Error("Failed to delete promo");
 }
 
-export async function getPromoById(id: string, token: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/promo/${id}`,
-    {
-      headers: {
-        apiKey: process.env.NEXT_PUBLIC_API_KEY!,
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+export async function getPromoById(id: string, token?: string) {
+  if (!token) {
+    throw new Error("Unauthorized");
+  }
 
-  if (!res.ok) throw new Error("Failed to fetch promo");
+  const res = await fetch(`${BASE_URL}/api/v1/promo/${id}`, {
+    headers: {
+      apiKey: API_KEY!,
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to fetch promo");
+  }
+
   return json.data;
 }
 
@@ -69,21 +73,30 @@ export async function createPromo(
   return json.data;
 }
 
-export async function updatePromo(id: string, data: any, token: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/update-promo/${id}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apiKey: process.env.NEXT_PUBLIC_API_KEY!,
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
+export async function updatePromo(
+  id: string,
+  data: CreatePromoPayload,
+  token?: string,
+) {
+  if (!token) {
+    throw new Error("Unauthorized");
+  }
+
+  const res = await fetch(`${BASE_URL}/api/v1/update-promo/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apiKey: API_KEY!,
+      Authorization: `Bearer ${token}`,
     },
-  );
+    body: JSON.stringify(data),
+  });
 
-  if (!res.ok) throw new Error("Failed to update promo");
+  const json = await res.json();
 
-  return res.json();
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to update promo");
+  }
+
+  return json.data;
 }
