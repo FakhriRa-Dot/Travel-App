@@ -29,7 +29,6 @@ export default function ManageCategoryPage() {
 
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [statusFilter, setStatusFilter] = useState("all");
 
   const fetchCategories = async () => {
     try {
@@ -51,10 +50,7 @@ export default function ManageCategoryPage() {
   const processedData = useMemo(() => {
     return categories
       .filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
-      .filter(() => {
-        if (statusFilter === "all") return true;
-        return true;
-      })
+
       .sort((a, b) => {
         if (sortBy === "az") return a.name.localeCompare(b.name);
         if (sortBy === "za") return b.name.localeCompare(a.name);
@@ -65,7 +61,7 @@ export default function ManageCategoryPage() {
         }
         return 0;
       });
-  }, [categories, search, sortBy, statusFilter]);
+  }, [categories, search, sortBy]);
 
   const totalPages = Math.ceil(processedData.length / itemsPerPage);
 
@@ -111,18 +107,6 @@ export default function ManageCategoryPage() {
           }}
           className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="px-4 py-2 border rounded-lg text-sm font-medium text-gray-600"
-        >
-          <option value="all">STATUS : ALL</option>
-          <option value="active">STATUS : ACTIVE</option>
-        </select>
 
         <select
           value={sortBy}

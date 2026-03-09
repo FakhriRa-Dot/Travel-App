@@ -17,7 +17,7 @@ export default function SidebarAdmin() {
   const router = useRouter();
 
   const menus = [
-    { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/homeAdmin", icon: LayoutDashboard },
     { name: "Manage Users", href: "/users", icon: Users },
     { name: "Manage Category", href: "/category", icon: Folder },
     { name: "Manage Activity", href: "/activity", icon: Tag },

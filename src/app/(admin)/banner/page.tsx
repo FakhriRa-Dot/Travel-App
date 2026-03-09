@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import BannerTabs from "./_components/BannerTabs";
 import BannerCard from "./_components/BannerCard";
 import {
   getBanners,
@@ -21,7 +20,6 @@ type Banner = {
 export default function BannerPage() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [visibleCount, setVisibleCount] = useState(3);
-  const [activeTab, setActiveTab] = useState("All");
   const [showModal, setShowModal] = useState(false);
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [formData, setFormData] = useState({
@@ -34,8 +32,12 @@ export default function BannerPage() {
   }, []);
 
   async function fetchData() {
-    const data = await getBanners();
-    setBanners(data);
+    try {
+      const data = await getBanners();
+      setBanners(data);
+    } catch (error) {
+      console.error("Failed to fetch banners:", error);
+    }
   }
 
   async function handleSubmit() {
@@ -45,7 +47,6 @@ export default function BannerPage() {
     }
 
     const token = localStorage.getItem("token");
-
     if (!token) {
       alert("Unauthorized. Please login again.");
       return;
@@ -100,9 +101,7 @@ export default function BannerPage() {
     setShowModal(true);
   }
 
-  const filtered = activeTab === "All" ? banners : banners;
-
-  const visibleBanners = filtered.slice(0, visibleCount);
+  const visibleBanners = banners.slice(0, visibleCount);
 
   return (
     <div className="space-y-10">
@@ -130,32 +129,24 @@ export default function BannerPage() {
         </button>
       </div>
 
-      <BannerTabs
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        total={banners.length}
-      />
-
       {/* LIST */}
       <div className="space-y-6">
         {visibleBanners.map((banner) => (
           <BannerCard
             key={banner.id}
             id={banner.id}
-            status="ACTIVE"
-            title={banner.name}
-            path="-"
-            dimensions="1920 x 600 px"
-            visibility="All Devices"
-            schedule={new Date(banner.createdAt).toLocaleDateString()}
-            image={banner.imageUrl}
+            name={banner.name}
+            imageUrl={banner.imageUrl}
+            createdAt={banner.createdAt}
+            updatedAt={banner.createdAt}
             onDelete={handleDelete}
             onEdit={() => handleEdit(banner)}
           />
         ))}
       </div>
 
-      {visibleCount < filtered.length && (
+      {/* LOAD MORE */}
+      {visibleCount < banners.length && (
         <div className="flex justify-center">
           <button
             onClick={() => setVisibleCount((prev) => prev + 3)}
