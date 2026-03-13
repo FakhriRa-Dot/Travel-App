@@ -68,24 +68,17 @@ export default function PaymentPage() {
     try {
       const token = localStorage.getItem("token")!;
 
-      const res = await createTransaction(token, cartIds, selectedPayment);
+      const transaction = await createTransaction(token, {
+        cartIds: cartIds,
+        paymentMethodId: selectedPayment,
+      });
 
-      console.log("Create Transaction:", res);
+      console.log("Transaction created:", transaction);
 
-      if (res.status !== "OK") {
-        alert("Transaction failed");
-        return;
-      }
-
-      const trx = await getMyTransactions(token);
-
-      const latestTransaction = trx.data[0];
-
-      console.log("Latest transaction:", latestTransaction);
-
-      router.push(`/payment/${latestTransaction.id}`);
+      router.push(`/payment/${transaction.id}`);
     } catch (error) {
       console.error(error);
+      alert("Transaction failed");
     }
   };
 

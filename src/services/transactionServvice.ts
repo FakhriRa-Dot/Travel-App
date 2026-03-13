@@ -3,100 +3,110 @@ import { CreateTransactionPayload } from "@/types/transaction";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
-const headers = {
-  apiKey: API_KEY as string,
-  "Content-Type": "application/json",
-};
+function getHeaders(token: string) {
+  return {
+    "Content-Type": "application/json",
+    apiKey: API_KEY as string,
+    Authorization: `Bearer ${token}`,
+  };
+}
 
 export async function getMyTransactions(token: string) {
   const res = await fetch(`${BASE_URL}/api/v1/my-transactions`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      apiKey: API_KEY as string,
-    },
+    headers: getHeaders(token),
+    cache: "no-store",
   });
 
   const json = await res.json();
 
-  return json;
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to fetch transactions");
+  }
+
+  return json.data;
 }
 
 export async function getAllTransactions(token: string) {
   const res = await fetch(`${BASE_URL}/api/v1/all-transactions`, {
-    headers: {
-      ...headers,
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(token),
+    cache: "no-store",
   });
 
-  return res.json();
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to fetch transactions");
+  }
+
+  return json.data;
 }
 
 export async function getTransactionById(token: string, id: string) {
   const res = await fetch(`${BASE_URL}/api/v1/transaction/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      apiKey: API_KEY as string,
-    },
-    cache: "no-store",
+    headers: getHeaders(token),
   });
 
-  return res.json();
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to fetch transaction");
+  }
+
+  return json.data;
 }
 
 export async function createTransaction(
   token: string,
-  cartIds: string[],
-  paymentMethodId: string,
+  payload: CreateTransactionPayload,
 ) {
   const res = await fetch(`${BASE_URL}/api/v1/create-transaction`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      apiKey: API_KEY as string,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      cartIds,
-      paymentMethodId,
-    }),
+    headers: getHeaders(token),
+    body: JSON.stringify(payload),
   });
 
   const json = await res.json();
-  return json;
+
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to create transaction");
+  }
+
+  return json.data;
 }
 
 export async function cancelTransaction(id: string, token: string) {
   const res = await fetch(`${BASE_URL}/api/v1/cancel-transaction/${id}`, {
     method: "POST",
-    headers: {
-      ...headers,
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(token),
   });
 
-  return res.json();
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to cancel transaction");
+  }
+
+  return json.data;
 }
 
 export async function updateTransactionProof(
   token: string,
   id: string,
-  data: { proofPaymentUrl: string },
+  payload: { proofPaymentUrl: string },
 ) {
-  const res = await fetch(
-    `${BASE_URL}/api/v1/update-transaction-proof-payment/${id}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        apiKey: API_KEY as string,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    },
-  );
+  const res = await fetch(`${BASE_URL}/api/v1/update-transaction-proof/${id}`, {
+    method: "POST",
+    headers: getHeaders(token),
+    body: JSON.stringify(payload),
+  });
 
-  return res.json();
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to upload proof");
+  }
+
+  return json.data;
 }
 
 export async function updateTransactionStatus(
@@ -108,14 +118,16 @@ export async function updateTransactionStatus(
     `${BASE_URL}/api/v1/update-transaction-status/${id}`,
     {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        apiKey: API_KEY as string,
-        "Content-Type": "application/json",
-      },
+      headers: getHeaders(token),
       body: JSON.stringify({ status }),
     },
   );
 
-  return res.json();
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to update transaction status");
+  }
+
+  return json.data;
 }

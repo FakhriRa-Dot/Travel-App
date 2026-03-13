@@ -15,9 +15,8 @@ export function useAuthGuard(requiredRole?: "user" | "admin") {
       return;
     }
 
-    if (requiredRole && role !== requiredRole) {
+    if (requiredRole && role && role !== requiredRole) {
       router.replace("/login");
-      return;
     }
   }, [requiredRole, router]);
 }

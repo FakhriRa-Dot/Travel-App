@@ -3,6 +3,9 @@
 import NavbarUser from "@/components/navbar/NavbarUser";
 import { useAuthGuard } from "@/hooks/AuthGuard";
 
+import "swiper/css";
+import "swiper/css/navigation";
+
 export default function UserLayout({
   children,
 }: {

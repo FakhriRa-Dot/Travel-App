@@ -20,7 +20,7 @@ export default async function BannerSection() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {banners.map((banner: any) => (
+          {banners.slice(0, 2).map((banner: any) => (
             <div
               key={banner.id}
               className="relative h-64 rounded-3xl overflow-hidden"
@@ -28,7 +28,7 @@ export default async function BannerSection() {
               <img
                 src={banner.imageUrl}
                 alt={banner.name}
-                className="object-cover"
+                className="object-cover w-full h-full"
               />
 
               <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6 text-white">
