@@ -11,13 +11,14 @@ const headers = {
 export async function getMyTransactions(token: string) {
   const res = await fetch(`${BASE_URL}/api/v1/my-transactions`, {
     headers: {
-      ...headers,
       Authorization: `Bearer ${token}`,
+      apiKey: API_KEY as string,
     },
   });
 
   const json = await res.json();
-  return json.data;
+
+  return json;
 }
 
 export async function getAllTransactions(token: string) {
@@ -31,31 +32,38 @@ export async function getAllTransactions(token: string) {
   return res.json();
 }
 
-export async function getTransactionById(id: string, token: string) {
+export async function getTransactionById(token: string, id: string) {
   const res = await fetch(`${BASE_URL}/api/v1/transaction/${id}`, {
     headers: {
-      ...headers,
       Authorization: `Bearer ${token}`,
+      apiKey: API_KEY as string,
     },
+    cache: "no-store",
   });
 
   return res.json();
 }
 
 export async function createTransaction(
-  data: CreateTransactionPayload,
   token: string,
+  cartIds: string[],
+  paymentMethodId: string,
 ) {
   const res = await fetch(`${BASE_URL}/api/v1/create-transaction`, {
     method: "POST",
     headers: {
-      ...headers,
       Authorization: `Bearer ${token}`,
+      apiKey: API_KEY as string,
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      cartIds,
+      paymentMethodId,
+    }),
   });
 
-  return res.json();
+  const json = await res.json();
+  return json;
 }
 
 export async function cancelTransaction(id: string, token: string) {
@@ -70,20 +78,21 @@ export async function cancelTransaction(id: string, token: string) {
   return res.json();
 }
 
-export async function uploadProofPayment(
-  id: string,
-  imageUrl: string,
+export async function updateTransactionProof(
   token: string,
+  id: string,
+  data: { proofPaymentUrl: string },
 ) {
   const res = await fetch(
     `${BASE_URL}/api/v1/update-transaction-proof-payment/${id}`,
     {
       method: "POST",
       headers: {
-        ...headers,
         Authorization: `Bearer ${token}`,
+        apiKey: API_KEY as string,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ proofPaymentUrl: imageUrl }),
+      body: JSON.stringify(data),
     },
   );
 
@@ -91,17 +100,18 @@ export async function uploadProofPayment(
 }
 
 export async function updateTransactionStatus(
+  token: string,
   id: string,
   status: string,
-  token: string,
 ) {
   const res = await fetch(
     `${BASE_URL}/api/v1/update-transaction-status/${id}`,
     {
       method: "POST",
       headers: {
-        ...headers,
         Authorization: `Bearer ${token}`,
+        apiKey: API_KEY as string,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ status }),
     },

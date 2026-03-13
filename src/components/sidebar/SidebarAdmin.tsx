@@ -65,7 +65,6 @@ export default function SidebarAdmin() {
         </nav>
       </div>
 
-      {/* Bottom Section */}
       <div className="p-4 border-t">
         <div className="flex items-center justify-between">
           <div>
