@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleUserRound, Search, ShoppingCart } from "lucide-react";
+import { CircleUserRound, Search, ShoppingCart, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +12,8 @@ export default function NavbarUser() {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const menus = [
@@ -49,10 +51,14 @@ export default function NavbarUser() {
 
   return (
     <nav className="bg-white shadow relative z-50">
-      <div className="mx-auto px-8 h-16 flex items-center justify-between">
-        <h1 className="font-heading text-standard text-3xl">EXPLORIA</h1>
+      <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+        {/* LOGO */}
+        <h1 className="font-heading text-standard text-2xl md:text-3xl">
+          EXPLORIA
+        </h1>
 
-        <div className="relative w-137.5 p-2 bg-bluebaby/20 rounded-full pl-6 pr-4 flex gap-3">
+        {/* SEARCH */}
+        <div className="hidden md:flex flex-1 max-w-xl p-2 bg-bluebaby/20 rounded-full pl-6 pr-4 gap-3">
           <Search className="text-standard" />
           <input
             type="text"
@@ -61,7 +67,8 @@ export default function NavbarUser() {
           />
         </div>
 
-        <ul className="flex gap-5 text-standard">
+        {/* MENU DESKTOP */}
+        <ul className="hidden md:flex gap-6 text-standard">
           {menus.map((menu) => {
             const isActive =
               menu.href === "/"
@@ -83,6 +90,7 @@ export default function NavbarUser() {
           })}
         </ul>
 
+        {/* RIGHT SIDE */}
         <div
           className="flex items-center text-standard gap-4 relative"
           ref={dropdownRef}
@@ -136,8 +144,40 @@ export default function NavbarUser() {
               )}
             </div>
           )}
+
+          {/* MOBILE MENU BUTTON */}
+          <button
+            onClick={() => setMobileMenu(!mobileMenu)}
+            className="md:hidden"
+          >
+            <Menu />
+          </button>
         </div>
       </div>
+
+      {/* MOBILE MENU */}
+      {mobileMenu && (
+        <div className="md:hidden px-4 pb-4 space-y-3 bg-white shadow">
+          <div className="flex p-2 bg-bluebaby/20 rounded-full gap-3">
+            <Search className="text-standard" />
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full text-standard focus:outline-none font-medium bg-transparent"
+            />
+          </div>
+
+          {menus.map((menu) => (
+            <Link
+              key={menu.name}
+              href={menu.href}
+              className="block py-2 font-medium text-standard"
+            >
+              {menu.name}
+            </Link>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
