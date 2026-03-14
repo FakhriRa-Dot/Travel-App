@@ -1,13 +1,13 @@
-import HeroSection from "@/app/(user)/homeUser/section/heroSect";
 import BannerSection from "./section/bannerSect";
+import HeroSection from "./section/heroSect";
 import PromoSection from "./section/promoSect";
 
 export default function HomeUser() {
   return (
     <main>
       <HeroSection />
-      <PromoSection />
       <BannerSection />
+      <PromoSection />
     </main>
   );
 }

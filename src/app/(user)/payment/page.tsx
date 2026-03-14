@@ -8,7 +8,6 @@ import {
   createTransaction,
   getMyTransactions,
 } from "@/services/transactionServvice";
-import { useSearchParams } from "next/navigation";
 
 type CartItem = {
   id: string;
@@ -31,13 +30,8 @@ export default function PaymentPage() {
 
   const [carts, setCarts] = useState<CartItem[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [selectedPayment, setSelectedPayment] = useState<string>("");
-
+  const [selectedPayment, setSelectedPayment] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const searchParams = useSearchParams();
-  const cartIdsParam = searchParams.get("cartIds");
-  const cartIds = cartIdsParam ? cartIdsParam.split(",") : [];
 
   useEffect(() => {
     fetchData();
@@ -46,12 +40,15 @@ export default function PaymentPage() {
   const fetchData = async () => {
     try {
       const cartRes = await getCarts();
-      setCarts(cartRes.data || []);
+
+      console.log("CART RESPONSE:", cartRes);
+
+      setCarts(Array.isArray(cartRes) ? cartRes : cartRes.data || []);
 
       const paymentRes = await getPaymentMethods();
       setPaymentMethods(paymentRes.data || []);
     } catch (error) {
-      console.error(error);
+      console.error("FETCH ERROR:", error);
     } finally {
       setLoading(false);
     }
@@ -68,17 +65,22 @@ export default function PaymentPage() {
     try {
       const token = localStorage.getItem("token")!;
 
-      const transaction = await createTransaction(token, {
-        cartIds: cartIds,
+      const cartIds = carts.map((c) => c.id);
+
+      await createTransaction(token, {
+        cartIds,
         paymentMethodId: selectedPayment,
       });
 
-      console.log("Transaction created:", transaction);
+      const transactions = await getMyTransactions(token);
 
-      router.push(`/payment/${transaction.id}`);
+      const latestTransaction = transactions[0];
+
+      console.log("LATEST TRANSACTION:", latestTransaction);
+
+      router.push(`/payment/${latestTransaction.id}`);
     } catch (error) {
       console.error(error);
-      alert("Transaction failed");
     }
   };
 
@@ -90,7 +92,6 @@ export default function PaymentPage() {
         <h1 className="text-3xl font-bold mb-10">Payment</h1>
 
         <div className="flex gap-12 items-start">
-          {/* LEFT SIDE */}
           <div className="flex-1 space-y-6">
             <h2 className="text-xl font-semibold">Choose Payment Method</h2>
 
@@ -98,7 +99,7 @@ export default function PaymentPage() {
               <div
                 key={method.id}
                 onClick={() => setSelectedPayment(method.id)}
-                className={`flex items-center gap-4 border rounded-xl p-4 cursor-pointer transition
+                className={`flex items-center gap-4 border rounded-xl p-4 cursor-pointer
                 ${
                   selectedPayment === method.id
                     ? "border-blue-600 bg-blue-50"
@@ -109,13 +110,11 @@ export default function PaymentPage() {
                   src={method.imageUrl}
                   className="w-16 h-10 object-contain"
                 />
-
                 <p className="font-medium">{method.name}</p>
               </div>
             ))}
           </div>
 
-          {/* RIGHT SIDE */}
           <div className="w-96 bg-white border rounded-2xl p-8 shadow-sm h-fit">
             <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
 

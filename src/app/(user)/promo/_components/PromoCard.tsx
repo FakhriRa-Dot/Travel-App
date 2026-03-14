@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export default function PromoCard({ promo }: any) {
+export default function PromoCard({ promo, showButton = true }: any) {
   const router = useRouter();
 
   const discount = Math.floor(
@@ -48,12 +48,14 @@ export default function PromoCard({ promo }: any) {
           </span>
         </div>
 
-        <button
-          onClick={handleUsePromo}
-          className="w-full bg-standard text-white py-2.5 rounded-full"
-        >
-          Use Promo
-        </button>
+        {showButton && (
+          <button
+            onClick={handleUsePromo}
+            className="w-full bg-standard text-white py-2.5 rounded-full"
+          >
+            Use Promo
+          </button>
+        )}
       </div>
     </div>
   );

@@ -26,10 +26,14 @@ export default function UploadProofPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!transactionId) return;
+
     fetchTransaction();
-  }, []);
+  }, [transactionId]);
 
   const fetchTransaction = async () => {
+    if (!transactionId) return;
+
     try {
       const token = localStorage.getItem("token")!;
 
@@ -37,7 +41,7 @@ export default function UploadProofPage() {
 
       console.log("TRANSACTION DETAIL:", res);
 
-      setTransaction(res.data);
+      setTransaction(res);
     } catch (error) {
       console.error(error);
     }

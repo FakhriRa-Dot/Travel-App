@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { getPromos } from "@/services/promoService";
-import Link from "next/link";
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { X } from "lucide-react";
+import PromoCard from "../../promo/_components/PromoCard";
+import { useRouter } from "next/navigation";
 
 export default function PromoSection() {
   const [promos, setPromos] = useState<any[]>([]);
+  const [selectedPromo, setSelectedPromo] = useState<any>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchPromos() {
@@ -20,62 +22,84 @@ export default function PromoSection() {
   }, []);
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20">
       <div className="max-w-7xl mx-auto px-10">
-        <div className="flex justify-between items-center mb-10">
-          <h2 className="text-3xl font-heading">Latest Promotions</h2>
+        <h2 className="text-3xl font-heading text-center mb-12">
+          Special Promotions
+        </h2>
 
-          <Link
-            href="/promo"
-            className="text-blue-600 font-medium hover:underline"
-          >
-            View All →
-          </Link>
+        <div className="grid md:grid-cols-2 gap-8">
+          {promos.slice(0, 2).map((promo) => (
+            <div key={promo.id} onClick={() => setSelectedPromo(promo)}>
+              <PromoCard promo={promo} showButton={false} />
+            </div>
+          ))}
         </div>
+      </div>
 
-        <Swiper
-          modules={[Autoplay, Navigation]}
-          spaceBetween={24}
-          slidesPerView={4}
-          navigation
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            320: { slidesPerView: 1 },
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-            1280: { slidesPerView: 4 },
-          }}
-        >
-          {promos.slice(0, 8).map((promo) => (
-            <SwiperSlide key={promo.id}>
-              <div className="bg-white rounded-2xl shadow hover:shadow-xl transition duration-300 hover:-translate-y-2">
-                <img
-                  src={promo.imageUrl}
-                  alt={promo.title}
-                  className="w-full h-44 object-cover rounded-t-2xl"
-                />
+      {selectedPromo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full overflow-hidden">
+            <div className="relative">
+              <img
+                src={selectedPromo.imageUrl}
+                alt={selectedPromo.title}
+                className="w-full h-48 object-cover"
+              />
 
-                <div className="p-4">
-                  <h3 className="font-semibold text-md mb-2 line-clamp-2">
-                    {promo.title}
-                  </h3>
+              <button
+                onClick={() => setSelectedPromo(null)}
+                className="absolute top-3 right-3 bg-white rounded-full p-2 shadow"
+              >
+                <X size={18} />
+              </button>
+            </div>
 
-                  <p className="text-sm text-gray-500 line-clamp-3">
-                    {promo.description}
-                  </p>
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-2">
+                {selectedPromo.title}
+              </h2>
 
-                  <div className="mt-3 text-blue-600 font-semibold text-sm">
-                    Code: {promo.promo_code}
-                  </div>
+              <p className="text-gray-600 text-sm mb-4">
+                {selectedPromo.description}
+              </p>
+
+              <div className="mb-4">
+                <p className="text-sm text-gray-500">Promo Code</p>
+
+                <div className="border border-dashed rounded-lg px-4 py-2 font-semibold text-blue-600">
+                  {selectedPromo.promo_code}
                 </div>
               </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+
+              <div className="mb-4">
+                <p className="text-sm text-gray-500">Minimum Purchase</p>
+
+                <p className="font-medium">
+                  Rp {selectedPromo.minimum_claim_price.toLocaleString()}
+                </p>
+              </div>
+
+              <p className="text-sm text-gray-600">
+                {selectedPromo.terms_condition}
+              </p>
+
+              <button
+                onClick={async () => {
+                  await navigator.clipboard.writeText(selectedPromo.promo_code);
+
+                  localStorage.setItem("promo_code", selectedPromo.promo_code);
+
+                  router.push("/explore");
+                }}
+                className="mt-6 w-full bg-standard text-white py-3 rounded-full"
+              >
+                Use Promo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

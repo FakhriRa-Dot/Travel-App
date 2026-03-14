@@ -16,8 +16,8 @@ export default function NavbarUser() {
 
   const menus = [
     { name: "Home", href: "/homeUser" },
-    { name: "Explore", href: "/explore" },
     { name: "Promo", href: "/promo" },
+    { name: "Explore", href: "/explore" },
   ];
 
   useEffect(() => {

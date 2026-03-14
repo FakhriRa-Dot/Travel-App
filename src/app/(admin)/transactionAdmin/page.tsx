@@ -20,25 +20,14 @@ export default function ManageTransactionsPage() {
 
   const fetchTransactions = async () => {
     const token = localStorage.getItem("token")!;
-    const res = await getAllTransactions(token);
 
-    console.log("ALL TRANSACTIONS:", res.data);
+    const data = await getAllTransactions(token);
 
-    setTransactions(res.data || []);
+    console.log("ALL TRANSACTIONS:", data);
+
+    setTransactions(data || []);
   };
 
-  const handleUpdateStatus = async (
-    id: string,
-    status: "success" | "failed",
-  ) => {
-    const token = localStorage.getItem("token")!;
-
-    await updateTransactionStatus(token, id, status);
-
-    fetchTransactions();
-  };
-
-  // SORT TERBARU
   const sortedTransactions = [...transactions].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
@@ -52,7 +41,6 @@ export default function ManageTransactionsPage() {
     startIndex + itemsPerPage,
   );
 
-  // STATISTICS
   const totalTransactions = transactions.length;
 
   const pendingTransactions = transactions.filter(
@@ -70,6 +58,30 @@ export default function ManageTransactionsPage() {
   const cancelledTransactions = transactions.filter(
     (trx) => trx.status === "cancelled",
   ).length;
+
+  const handleApprove = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token")!;
+
+      await updateTransactionStatus(token, id, "success");
+
+      fetchTransactions();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token")!;
+
+      await updateTransactionStatus(token, id, "failed");
+
+      fetchTransactions();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const statusBadge = (status: string) => {
     switch (status) {
@@ -89,8 +101,6 @@ export default function ManageTransactionsPage() {
   return (
     <div className="p-6">
       <h1 className="text-xl font-semibold mb-6">Manage Transactions</h1>
-
-      {/* STATISTICS */}
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         <div className="border rounded-lg p-4 shadow-sm">
@@ -127,8 +137,6 @@ export default function ManageTransactionsPage() {
         </div>
       </div>
 
-      {/* TABLE */}
-
       <table className="w-full border">
         <thead>
           <tr className="bg-gray-100">
@@ -138,6 +146,7 @@ export default function ManageTransactionsPage() {
             <th className="border p-2">Total</th>
             <th className="border p-2">Proof</th>
             <th className="border p-2">Status</th>
+            <th className="border p-2">Action</th>
           </tr>
         </thead>
 
@@ -178,6 +187,26 @@ export default function ManageTransactionsPage() {
                 >
                   {trx.status}
                 </span>
+              </td>
+
+              <td className="border p-2 space-x-2">
+                {trx.status === "pending" && (
+                  <>
+                    <button
+                      onClick={() => handleApprove(trx.id)}
+                      className="bg-bluebaby text-white px-2 py-1 rounded text-sm"
+                    >
+                      Approve
+                    </button>
+
+                    <button
+                      onClick={() => handleReject(trx.id)}
+                      className="bg-standard text-white px-2 py-1 rounded text-sm"
+                    >
+                      Reject
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}

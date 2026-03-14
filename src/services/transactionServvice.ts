@@ -67,11 +67,15 @@ export async function createTransaction(
 
   const json = await res.json();
 
+  console.log("==== CREATE TRANSACTION RESPONSE ====");
+  console.log("STATUS:", res.status);
+  console.log("RESPONSE:", json);
+
   if (!res.ok) {
     throw new Error(json.message || "Failed to create transaction");
   }
 
-  return json.data;
+  return json;
 }
 
 export async function cancelTransaction(id: string, token: string) {
@@ -94,11 +98,14 @@ export async function updateTransactionProof(
   id: string,
   payload: { proofPaymentUrl: string },
 ) {
-  const res = await fetch(`${BASE_URL}/api/v1/update-transaction-proof/${id}`, {
-    method: "POST",
-    headers: getHeaders(token),
-    body: JSON.stringify(payload),
-  });
+  const res = await fetch(
+    `${BASE_URL}/api/v1/update-transaction-proof-payment/${id}`,
+    {
+      method: "POST",
+      headers: getHeaders(token),
+      body: JSON.stringify(payload),
+    },
+  );
 
   const json = await res.json();
 

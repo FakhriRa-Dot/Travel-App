@@ -24,6 +24,12 @@ export default function MyTransactionsPage() {
 
   useEffect(() => {
     fetchTransactions();
+
+    const interval = setInterval(() => {
+      fetchTransactions();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const fetchTransactions = async () => {
@@ -34,7 +40,7 @@ export default function MyTransactionsPage() {
 
       console.log("MY TRANSACTIONS:", res);
 
-      setTransactions(res.data || []);
+      setTransactions(res || []);
     } catch (error) {
       console.error(error);
     } finally {
@@ -49,7 +55,7 @@ export default function MyTransactionsPage() {
   const statusColor = (status: string) => {
     if (status === "success") return "bg-green-100 text-green-700";
     if (status === "pending") return "bg-yellow-100 text-yellow-700";
-    if (status === "cancel") return "bg-red-100 text-red-700";
+    if (status === "cancelled") return "bg-red-100 text-red-700";
     return "bg-gray-100 text-gray-700";
   };
 
@@ -66,7 +72,7 @@ export default function MyTransactionsPage() {
           {paginated.map((trx) => (
             <div
               key={trx.id}
-              className="bg-white border rounded-xl p-6 flex justify-between items-center shadow-sm"
+              className="bg-white border rounded-xl p-6 flex justify-between items-center shadow-sm mb-3"
             >
               <div>
                 <p className="font-semibold text-lg">{trx.invoiceId}</p>
@@ -82,8 +88,6 @@ export default function MyTransactionsPage() {
                 >
                   {trx.status}
                 </span>
-
-                {/* Status tambahan */}
 
                 {trx.status === "pending" && trx.proofPaymentUrl && (
                   <p className="text-xs text-yellow-600 mt-2">
@@ -103,8 +107,6 @@ export default function MyTransactionsPage() {
                   Rp {trx.totalAmount.toLocaleString("id-ID")}
                 </p>
 
-                {/* Upload proof button */}
-
                 {trx.status === "pending" && !trx.proofPaymentUrl && (
                   <button
                     onClick={() => router.push(`/payment/${trx.id}`)}
@@ -113,8 +115,6 @@ export default function MyTransactionsPage() {
                     Upload Proof
                   </button>
                 )}
-
-                {/* View proof */}
 
                 {trx.proofPaymentUrl && (
                   <a
@@ -135,8 +135,6 @@ export default function MyTransactionsPage() {
             </p>
           )}
         </div>
-
-        {/* Pagination */}
 
         {totalPages > 1 && (
           <div className="flex justify-center gap-2 mt-10">
