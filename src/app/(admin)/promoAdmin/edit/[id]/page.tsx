@@ -39,7 +39,7 @@ export default function EditPromoPage() {
 
     async function fetchPromo() {
       try {
-        const data = await getPromoById(id, token);
+        const data = await getPromoById(id, token!);
 
         setForm({
           title: data.title,
@@ -85,7 +85,7 @@ export default function EditPromoPage() {
     }
 
     try {
-      await updatePromo(id, form, token);
+      await updatePromo(id, form, token!);
       alert("Promo updated successfully");
       router.push("/promoAdmin");
     } catch (error) {

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans, Yeseva_One } from "next/font/google";
 import "../style/globals.css";
-import NavbarHome from "@/components/navbar/NavbarHome";
 
 const notoSans = Noto_Sans({
   variable: "--font-noto-sans",
