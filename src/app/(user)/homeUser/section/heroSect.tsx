@@ -5,6 +5,7 @@ import { getBanners } from "@/services/bannerService";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
+import SafeImage from "@/components/common/SafeImage";
 
 export default function HeroSection() {
   const [banners, setBanners] = useState<any[]>([]);
@@ -45,7 +46,7 @@ export default function HeroSection() {
         {banners.map((banner) => (
           <SwiperSlide key={banner.id} className="h-full">
             <div className="relative h-full w-full">
-              <img
+              <SafeImage
                 src={banner.imageUrl}
                 alt={banner.name}
                 className="w-full h-full object-cover"

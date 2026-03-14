@@ -1,3 +1,4 @@
+import SafeImage from "@/components/common/SafeImage";
 import { Activity } from "@/types/activity";
 import { Heart } from "lucide-react";
 import Link from "next/link";
@@ -13,7 +14,7 @@ export default function ActivityCard({ activity }: Props) {
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
       <div className="relative h-48">
-        <img
+        <SafeImage
           src={imageUrl}
           alt={activity.title}
           className="object-cover w-full h-full"

@@ -5,6 +5,7 @@ import { getUsers, deleteUser, updateUserRole } from "@/services/userService";
 import { User } from "@/types/user";
 import Pagination from "@/components/common/Pagination";
 import UpdateUserRoleModal from "./_components/UpdateRole";
+import SafeImage from "@/components/common/SafeImage";
 
 export default function ManageUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -114,7 +115,7 @@ export default function ManageUsersPage() {
               >
                 <td className="px-6 py-4 flex items-center gap-3 font-medium text-gray-700">
                   {user.profilePictureUrl ? (
-                    <img
+                    <SafeImage
                       src={user.profilePictureUrl}
                       alt={user.name}
                       className="w-9 h-9 rounded-full object-cover border border-gray-200"

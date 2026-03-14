@@ -10,6 +10,7 @@ import {
 } from "@/services/categoryService";
 import { Category } from "@/types/activity";
 import Pagination from "@/components/common/Pagination";
+import SafeImage from "@/components/common/SafeImage";
 
 export default function ManageCategoryPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -150,7 +151,7 @@ export default function ManageCategoryPage() {
               paginatedData.map((item) => (
                 <tr key={item.id} className="border-t hover:bg-gray-50">
                   <td className="px-6 py-4 flex items-center gap-3">
-                    <img
+                    <SafeImage
                       src={item.imageUrl}
                       alt={item.name}
                       className="w-5 h-5 rounded-sm object-cover"

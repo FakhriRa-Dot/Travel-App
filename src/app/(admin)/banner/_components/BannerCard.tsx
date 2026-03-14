@@ -1,3 +1,4 @@
+import SafeImage from "@/components/common/SafeImage";
 import { Pencil, Trash } from "lucide-react";
 
 type Props = {
@@ -21,12 +22,14 @@ export default function BannerCard({
 }: Props) {
   return (
     <div className="flex bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
-      {/* Image */}
       <div className="w-64 h-40 relative">
-        <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+        <SafeImage
+          src={imageUrl}
+          alt={name}
+          className="w-full h-full object-cover"
+        />
       </div>
 
-      {/* Content */}
       <div className="flex-1 p-6 flex flex-col justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">{name}</h2>

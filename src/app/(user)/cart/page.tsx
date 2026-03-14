@@ -5,6 +5,7 @@ import { getCarts, deleteCart, updateCart } from "@/services/cartService";
 import { getPromos } from "@/services/promoService";
 import { Promo } from "@/types/promo";
 import { useRouter } from "next/navigation";
+import SafeImage from "@/components/common/SafeImage";
 
 export default function CartPage() {
   const router = useRouter();
@@ -134,7 +135,6 @@ export default function CartPage() {
         <h1 className="text-3xl font-bold mb-10">Your Cart</h1>
 
         <div className="flex gap-10">
-          {/* CART ITEMS */}
           <div className="flex-1 space-y-6">
             {carts.map((item) => {
               const itemTotal = item.activity.price * item.quantity;
@@ -144,8 +144,9 @@ export default function CartPage() {
                   key={item.id}
                   className="bg-white border rounded-xl p-6 flex gap-6"
                 >
-                  <img
+                  <SafeImage
                     src={item.activity.imageUrl}
+                    alt="Keranjang"
                     className="w-36 h-36 object-cover rounded-lg"
                   />
 

@@ -5,6 +5,7 @@ import { getPromos } from "@/services/promoService";
 import { X } from "lucide-react";
 import PromoCard from "../../promo/_components/PromoCard";
 import { useRouter } from "next/navigation";
+import SafeImage from "@/components/common/SafeImage";
 
 export default function PromoSection() {
   const [promos, setPromos] = useState<any[]>([]);
@@ -41,7 +42,7 @@ export default function PromoSection() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full overflow-hidden">
             <div className="relative">
-              <img
+              <SafeImage
                 src={selectedPromo.imageUrl}
                 alt={selectedPromo.title}
                 className="w-full h-48 object-cover"

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getActivities, deleteActivity } from "@/services/activityService";
 import Pagination from "@/components/common/Pagination";
+import SafeImage from "@/components/common/SafeImage";
 
 export default function ManageActivityPage() {
   const router = useRouter();
@@ -107,7 +108,7 @@ export default function ManageActivityPage() {
                   className="border-t hover:bg-gray-50 transition"
                 >
                   <td className="px-6 py-6 flex items-center gap-4">
-                    <img
+                    <SafeImage
                       src={activity.imageUrls?.[0] || "/image.png"}
                       alt={activity.title}
                       className="w-16 h-12 object-cover rounded-md"

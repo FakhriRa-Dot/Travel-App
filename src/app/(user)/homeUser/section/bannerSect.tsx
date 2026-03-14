@@ -1,14 +1,30 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { getActivities } from "@/services/activityService";
 import ActivityCard from "../../explore/_components/activityCard";
 import Link from "next/link";
 
-export default async function BannerSection() {
-  const activities = await getActivities();
+export default function BannerSection() {
+  const [activities, setActivities] = useState<any[]>([]);
 
-  if (!activities || activities.length === 0) {
+  useEffect(() => {
+    async function fetchActivities() {
+      try {
+        const data = await getActivities();
+        setActivities(data);
+      } catch (err) {
+        console.error("Failed to load activities", err);
+      }
+    }
+
+    fetchActivities();
+  }, []);
+
+  if (!activities.length) {
     return (
       <section className="py-20 text-center text-gray-400">
-        No activities available.
+        Loading activities...
       </section>
     );
   }

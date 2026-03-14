@@ -1,5 +1,6 @@
 "use client";
 
+import SafeImage from "@/components/common/SafeImage";
 import { useRouter } from "next/navigation";
 
 export default function PromoCard({ promo, showButton = true }: any) {
@@ -20,7 +21,7 @@ export default function PromoCard({ promo, showButton = true }: any) {
   return (
     <div className="group relative bg-white rounded-3xl shadow-sm transform hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
       <div className="relative overflow-hidden">
-        <img
+        <SafeImage
           src={promo.imageUrl}
           alt={promo.title}
           className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"

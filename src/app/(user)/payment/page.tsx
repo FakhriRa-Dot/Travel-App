@@ -8,6 +8,7 @@ import {
   createTransaction,
   getMyTransactions,
 } from "@/services/transactionServvice";
+import SafeImage from "@/components/common/SafeImage";
 
 type CartItem = {
   id: string;
@@ -106,8 +107,9 @@ export default function PaymentPage() {
                     : "bg-white"
                 }`}
               >
-                <img
+                <SafeImage
                   src={method.imageUrl}
+                  alt="Payment Method"
                   className="w-16 h-10 object-contain"
                 />
                 <p className="font-medium">{method.name}</p>
