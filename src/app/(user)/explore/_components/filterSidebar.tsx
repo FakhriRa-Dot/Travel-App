@@ -62,7 +62,7 @@ export default function FilterSidebar({ onFilterChange }: Props) {
     price !== DEFAULT_PRICE || rating !== null || selectedCategory !== null;
 
   return (
-    <aside className="w-80 p-6 h-fit shadow-sm bg-white rounded-xl">
+    <aside className="w-full lg:w-80 p-6 h-fit shadow-sm bg-white rounded-xl">
       <div className="flex justify-between items-center mb-8">
         <h2 className="font-semibold text-2xl">Filters</h2>
         <button
@@ -73,7 +73,6 @@ export default function FilterSidebar({ onFilterChange }: Props) {
         </button>
       </div>
 
-      {/* PRICE */}
       <div className="mb-8">
         <div className="flex gap-2 items-center mb-3">
           <CircleDollarSign className="w-5 h-5" />
@@ -96,7 +95,6 @@ export default function FilterSidebar({ onFilterChange }: Props) {
         </div>
       </div>
 
-      {/* RATING */}
       <div className="mb-8">
         <div className="flex gap-2 items-center mb-3">
           <Star className="w-5 h-5" />
@@ -118,7 +116,6 @@ export default function FilterSidebar({ onFilterChange }: Props) {
         </div>
       </div>
 
-      {/* CATEGORY */}
       <div>
         <div className="flex gap-2 items-center mb-3">
           <Boxes className="w-5 h-5" />

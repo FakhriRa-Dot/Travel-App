@@ -27,15 +27,17 @@ export default function ExplorePage() {
   }, []);
 
   return (
-    <main className="flex gap-10 px-16 py-10">
+    <main className="flex flex-col lg:flex-row gap-8 px-4 md:px-8 lg:px-16 py-10">
       <FilterSidebar onFilterChange={fetchActivities} />
 
-      <section className="px-6 flex-1">
-        <div className="mb-10">
-          <h1 className="font-bold text-4xl mb-2">Discover Activities</h1>
+      <section className="flex-1">
+        <div className="mb-8">
+          <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl mb-2">
+            Discover Activities
+          </h1>
         </div>
 
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {activities.length === 0 ? (
             <p>No activities found</p>
           ) : (

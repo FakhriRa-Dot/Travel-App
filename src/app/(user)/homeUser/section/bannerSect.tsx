@@ -23,27 +23,29 @@ export default function BannerSection() {
 
   if (!activities.length) {
     return (
-      <section className="py-20 text-center text-gray-400">
+      <section className="py-16 text-center text-gray-400">
         Loading activities...
       </section>
     );
   }
 
   return (
-    <section className="bg-gray-50 py-20">
-      <div className="max-w-7xl mx-auto px-10">
-        <div className="flex justify-between items-center mb-12">
-          <h2 className="text-3xl font-heading">Popular Activities</h2>
+    <section className="bg-gray-50 py-16 md:py-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className="flex justify-between items-center mb-8 md:mb-12">
+          <h2 className="text-2xl md:text-3xl font-heading">
+            Popular Activities
+          </h2>
 
           <Link
             href="/explore"
-            className="text-blue-600 font-semibold hover:underline"
+            className="text-blue-600 font-semibold hover:underline text-sm md:text-base"
           >
             View All
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {activities.slice(0, 3).map((activity: any) => (
             <ActivityCard key={activity.id} activity={activity} />
           ))}

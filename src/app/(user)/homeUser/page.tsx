@@ -6,7 +6,7 @@ import PromoSection from "./section/promoSect";
 
 export default function HomeUser() {
   return (
-    <main>
+    <main className="overflow-x-hidden">
       <HeroSection />
       <BannerSection />
       <PromoSection />

@@ -21,8 +21,8 @@ export default async function ActivityDetailPage({
     <main>
       <ActivityHero activity={activity} />
 
-      <section className="flex flex-col lg:flex-row gap-12 px-6 lg:px-16 py-16 bg-gray-50">
-        <div className="flex-1 space-y-12">
+      <section className="flex flex-col lg:flex-row gap-10 px-4 md:px-8 lg:px-16 py-12 md:py-16 bg-gray-50">
+        <div className="flex-1 space-y-10">
           <ActivityDescription activity={activity} />
           <ActivityFacilities activity={activity} />
           <ActivityLocation activity={activity} />

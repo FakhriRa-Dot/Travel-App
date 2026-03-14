@@ -23,13 +23,13 @@ export default function PromoSection() {
   }, []);
 
   return (
-    <section className="py-20">
-      <div className="max-w-7xl mx-auto px-10">
-        <h2 className="text-3xl font-heading text-center mb-12">
+    <section className="py-16 md:py-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <h2 className="text-2xl md:text-3xl font-heading text-center mb-10 md:mb-12">
           Special Promotions
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {promos.slice(0, 2).map((promo) => (
             <div key={promo.id} onClick={() => setSelectedPromo(promo)}>
               <PromoCard promo={promo} showButton={false} />
@@ -45,7 +45,7 @@ export default function PromoSection() {
               <SafeImage
                 src={selectedPromo.imageUrl}
                 alt={selectedPromo.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-40 md:h-48 object-cover"
               />
 
               <button
@@ -56,8 +56,8 @@ export default function PromoSection() {
               </button>
             </div>
 
-            <div className="p-6">
-              <h2 className="text-xl font-semibold mb-2">
+            <div className="p-5 md:p-6">
+              <h2 className="text-lg md:text-xl font-semibold mb-2">
                 {selectedPromo.title}
               </h2>
 
@@ -88,9 +88,7 @@ export default function PromoSection() {
               <button
                 onClick={async () => {
                   await navigator.clipboard.writeText(selectedPromo.promo_code);
-
                   localStorage.setItem("promo_code", selectedPromo.promo_code);
-
                   router.push("/explore");
                 }}
                 className="mt-6 w-full bg-standard text-white py-3 rounded-full"

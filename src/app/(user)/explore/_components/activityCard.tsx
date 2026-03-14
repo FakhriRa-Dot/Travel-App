@@ -13,23 +13,21 @@ export default function ActivityCard({ activity }: Props) {
 
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
-      <div className="relative h-48">
+      <div className="relative h-44 md:h-48">
         <SafeImage
           src={imageUrl}
           alt={activity.title}
           className="object-cover w-full h-full"
         />
-
-        {/* <div className="absolute top-3 right-3 bg-white p-2 rounded-full">
-          <Heart />
-        </div> */}
       </div>
 
       <div className="p-4">
         <p className="text-xs text-gray-400">
           {activity.city}, {activity.province}
         </p>
-        <h3 className="font-semibold text-gray-800 mt-1">{activity.title}</h3>
+        <h3 className="font-semibold text-gray-800 mt-1 line-clamp-2">
+          {activity.title}
+        </h3>
 
         <p className="text-sm text-standard line-clamp-2 mt-2">
           {activity.description}

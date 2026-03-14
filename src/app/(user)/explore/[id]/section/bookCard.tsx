@@ -37,7 +37,7 @@ export default function BookingCard({ activity }: Props) {
   };
 
   return (
-    <div className="w-95">
+    <div className="w-full lg:w-80">
       <div className="bg-[#F4F6F8] p-6 rounded-3xl shadow-sm sticky top-10 space-y-6">
         <div className="flex justify-between items-start">
           <p className="text-2xl font-bold text-[#3A6E8F]">
