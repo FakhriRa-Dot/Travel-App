@@ -21,7 +21,7 @@ export async function createBanner(
   data: { name: string; imageUrl: string },
   token: string,
 ) {
-  const res = await fetch(`${BASE_URL}/api/v1/banners`, {
+  const res = await fetch(`${BASE_URL}/api/v1/create-banner`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export async function updateBanner(
   data: { name: string; imageUrl: string },
   token: string,
 ) {
-  const res = await fetch(`${BASE_URL}/api/v1/banners/${id}`, {
+  const res = await fetch(`${BASE_URL}/api/v1/update-banner/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
