@@ -14,9 +14,14 @@ export default function MyTransactionsPage() {
 
   const perPage = 10;
 
+  // urutkan transaksi dari terbaru
+  const sortedTransactions = [...transactions].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+
   const startIndex = (page - 1) * perPage;
-  const paginated = transactions.slice(startIndex, startIndex + perPage);
-  const totalPages = Math.ceil(transactions.length / perPage);
+  const paginated = sortedTransactions.slice(startIndex, startIndex + perPage);
+  const totalPages = Math.ceil(sortedTransactions.length / perPage);
 
   function handleUpload(id: string) {
     router.push(`/payment/${id}`);

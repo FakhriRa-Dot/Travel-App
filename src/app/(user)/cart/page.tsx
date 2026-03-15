@@ -58,7 +58,7 @@ export default function CartPage() {
         </h1>
 
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
-          <div className="w-full lg:w-1/3">
+          <div className="w-full lg:w-2/3 space-y-4">
             {carts.map((item) => (
               <CartItem
                 key={item.id}
@@ -69,7 +69,7 @@ export default function CartPage() {
             ))}
           </div>
 
-          <div className="flex-1 lg:w-2/3 space-y-6">
+          <div className="flex-1 lg:w-1/3 space-y-6">
             <OrderSummary
               subtotal={subtotal}
               serviceFee={serviceFee}

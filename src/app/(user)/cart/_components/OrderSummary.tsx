@@ -1,4 +1,5 @@
 import { Promo } from "@/types/promo";
+import { Trash } from "lucide-react";
 
 type Props = {
   subtotal: number;
@@ -35,7 +36,7 @@ export default function OrderSummary({
         Order Summary
       </h2>
 
-      <div className="space-y-3 md:space-y-4 text-sm">
+      <div className="space-y-5 md:space-y-6 text-sm">
         <div className="flex justify-between">
           <span>Subtotal</span>
           <span>Rp {subtotal.toLocaleString("id-ID")}</span>
@@ -84,6 +85,8 @@ export default function OrderSummary({
           Remove Promo
         </button>
       )}
+
+      <div className="border-t my-6"></div>
 
       <div className="flex justify-between font-semibold text-base md:text-lg">
         <span>Total</span>

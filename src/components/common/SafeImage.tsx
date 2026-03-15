@@ -9,7 +9,7 @@ type Props = {
 export default function SafeImage({ src, alt, className }: Props) {
   return (
     <img
-      src={src}
+      src={src || "/images/image_default.png"}
       alt={alt}
       className={className}
       onError={(e) => {

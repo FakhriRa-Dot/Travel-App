@@ -6,6 +6,7 @@ import {
   calculateServiceFee,
   calculateTotal,
 } from "./utils/paymentCalculator";
+
 import { usePayment } from "@/hooks/usePayment";
 import PaymentMethodCard from "./_components/paymentMethod";
 import OrderSummary from "./_components/orderSummary";
@@ -20,15 +21,18 @@ export default function PaymentPage() {
     setSelectedPayment,
     loading,
     pay,
+    discount,
+    appliedPromo,
   } = usePayment();
 
   const subtotal = calculateSubtotal(carts);
   const serviceFee = calculateServiceFee(subtotal);
-  const total = calculateTotal(subtotal, serviceFee);
+  const total = calculateTotal(subtotal, serviceFee, discount);
 
   async function handlePay() {
     try {
       const trx = await pay();
+      localStorage.setItem("paymentTotal", total.toString());
       router.push(`/payment/${trx.id}`);
     } catch (error) {
       console.error(error);
@@ -44,9 +48,7 @@ export default function PaymentPage() {
           Payment
         </h1>
 
-        {/* Responsive Layout */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
-          {/* LEFT SIDE */}
           <div className="flex-1 space-y-5 md:space-y-6 w-full">
             <h2 className="text-lg md:text-xl font-semibold">
               Choose Payment Method
@@ -64,12 +66,13 @@ export default function PaymentPage() {
             ))}
           </div>
 
-          {/* RIGHT SIDE */}
           <div className="w-full lg:w-auto">
             <OrderSummary
               carts={carts}
               serviceFee={serviceFee}
               total={total}
+              discount={discount}
+              appliedPromo={appliedPromo}
               onPay={handlePay}
               disabled={!selectedPayment}
             />

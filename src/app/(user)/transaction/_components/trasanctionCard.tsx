@@ -1,3 +1,5 @@
+"use client";
+
 import { TransactionListItem } from "@/types/transactionView";
 import { getStatusColor } from "../_utils/transactionStatus";
 
@@ -7,6 +9,9 @@ type Props = {
 };
 
 export default function TransactionCard({ trx, onUpload }: Props) {
+  const serviceFee = trx.totalAmount * 0.05;
+  const finalTotal = trx.totalAmount + serviceFee;
+
   return (
     <div className="bg-white border rounded-xl p-6 flex justify-between items-center shadow-sm mb-3">
       <div>
@@ -39,7 +44,7 @@ export default function TransactionCard({ trx, onUpload }: Props) {
 
       <div className="text-right">
         <p className="font-bold text-lg">
-          Rp {trx.totalAmount.toLocaleString("id-ID")}
+          Rp {finalTotal.toLocaleString("id-ID")}
         </p>
 
         {trx.status === "pending" && !trx.proofPaymentUrl && (

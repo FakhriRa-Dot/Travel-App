@@ -12,6 +12,10 @@ export function usePayment() {
   const [carts, setCarts] = useState<any[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
   const [selectedPayment, setSelectedPayment] = useState("");
+
+  const [discount, setDiscount] = useState(0);
+  const [appliedPromo, setAppliedPromo] = useState<any | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,11 +26,17 @@ export function usePayment() {
     try {
       const cartRes = await getCarts();
 
-      setCarts(Array.isArray(cartRes) ? cartRes : cartRes.data || []);
+      const cartData = Array.isArray(cartRes) ? cartRes : cartRes.data || [];
+      setCarts(cartData);
 
       const paymentRes = await getPaymentMethods();
-
       setPaymentMethods(paymentRes.data || []);
+
+      const storedDiscount = localStorage.getItem("discount");
+      const storedPromo = localStorage.getItem("promo");
+
+      if (storedDiscount) setDiscount(Number(storedDiscount));
+      if (storedPromo) setAppliedPromo(JSON.parse(storedPromo));
     } catch (error) {
       console.error(error);
     } finally {
@@ -44,9 +54,17 @@ export function usePayment() {
       paymentMethodId: selectedPayment,
     });
 
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const transactions = await getMyTransactions(token);
 
-    return transactions[0];
+    const latest = transactions.reduce((prev: any, current: any) => {
+      return new Date(current.createdAt) > new Date(prev.createdAt)
+        ? current
+        : prev;
+    });
+
+    return latest;
   }
 
   return {
@@ -56,5 +74,7 @@ export function usePayment() {
     setSelectedPayment,
     loading,
     pay,
+    discount,
+    appliedPromo,
   };
 }

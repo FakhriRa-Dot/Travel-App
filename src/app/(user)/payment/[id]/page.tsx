@@ -25,15 +25,21 @@ export default function UploadProofPage() {
   const [proofUrl, setProofUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [finalTotal, setFinalTotal] = useState<number | null>(null);
+
   useEffect(() => {
     if (!transactionId) return;
 
     fetchTransaction();
+
+    const storedTotal = localStorage.getItem("paymentTotal");
+
+    if (storedTotal) {
+      setFinalTotal(Number(storedTotal));
+    }
   }, [transactionId]);
 
   const fetchTransaction = async () => {
-    if (!transactionId) return;
-
     try {
       const token = localStorage.getItem("token")!;
 
@@ -103,7 +109,8 @@ export default function UploadProofPage() {
           <div>
             <p className="text-sm text-gray-500">Total Payment</p>
             <p className="font-semibold text-lg">
-              Rp {transaction.totalAmount.toLocaleString("id-ID")}
+              Rp{" "}
+              {(finalTotal ?? transaction.totalAmount).toLocaleString("id-ID")}
             </p>
           </div>
 
@@ -116,10 +123,8 @@ export default function UploadProofPage() {
           </span>
         </div>
 
-        {/* Proof Input */}
-
         <p className="text-sm text-gray-500 mb-2">
-          Paste the link of your payment screenshot
+          Paste the link of your payment
         </p>
 
         <input

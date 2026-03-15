@@ -9,6 +9,10 @@ export function calculateServiceFee(subtotal: number) {
   return subtotal * 0.05;
 }
 
-export function calculateTotal(subtotal: number, fee: number) {
-  return subtotal + fee;
+export function calculateTotal(
+  subtotal: number,
+  fee: number,
+  discount: number = 0,
+) {
+  return subtotal + fee - discount;
 }

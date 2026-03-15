@@ -2,6 +2,8 @@ type Props = {
   carts: any[];
   serviceFee: number;
   total: number;
+  discount: number;
+  appliedPromo: any | null;
   onPay: () => void;
   disabled: boolean;
 };
@@ -10,6 +12,8 @@ export default function OrderSummary({
   carts,
   serviceFee,
   total,
+  discount,
+  appliedPromo,
   onPay,
   disabled,
 }: Props) {
@@ -37,6 +41,13 @@ export default function OrderSummary({
           <span>Rp {serviceFee.toLocaleString("id-ID")}</span>
         </div>
       </div>
+
+      {appliedPromo && (
+        <div className="flex justify-between text-green-600">
+          <span>Promo ({appliedPromo.promo_code})</span>
+          <span>- Rp {discount.toLocaleString("id-ID")}</span>
+        </div>
+      )}
 
       <div className="border-t my-5 md:my-6"></div>
 
