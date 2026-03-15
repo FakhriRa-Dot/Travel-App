@@ -25,7 +25,7 @@ export default function HomeAdmin() {
       const promosData = await getPromos(token);
       const transactionsData = await getAllTransactions(token);
 
-      setUsers(usersData);
+      setUsers(usersData?.data || []);
       setActivities(activitiesData);
       setPromos(promosData);
       setTransactions(transactionsData);
