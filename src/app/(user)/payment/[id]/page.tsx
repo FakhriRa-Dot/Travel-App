@@ -15,6 +15,9 @@ type Transaction = {
   createdAt: string;
 };
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
 export default function UploadProofPage() {
   const params = useParams();
   const router = useRouter();
@@ -22,7 +25,8 @@ export default function UploadProofPage() {
   const transactionId = params.id as string;
 
   const [transaction, setTransaction] = useState<Transaction | null>(null);
-  const [proofUrl, setProofUrl] = useState("");
+  const [proofFile, setProofFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [finalTotal, setFinalTotal] = useState<number | null>(null);
@@ -53,9 +57,33 @@ export default function UploadProofPage() {
     }
   };
 
+  const uploadImage = async () => {
+    if (!proofFile) return "";
+
+    const formData = new FormData();
+    formData.append("image", proofFile);
+
+    const res = await fetch(`${BASE_URL}/api/v1/upload-image`, {
+      method: "POST",
+      headers: {
+        apiKey: API_KEY as string,
+      },
+      body: formData,
+    });
+
+    const data = await res.json();
+    console.log("UPLOAD RESPONSE:", data);
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to upload image");
+    }
+
+    return data.url;
+  };
+
   const handleSubmit = async () => {
-    if (!proofUrl) {
-      alert("Please paste proof payment URL");
+    if (!proofFile) {
+      alert("Please choose payment proof");
       return;
     }
 
@@ -64,8 +92,11 @@ export default function UploadProofPage() {
 
       const token = localStorage.getItem("token")!;
 
+      const uploadedUrl = await uploadImage();
+      console.log(uploadedUrl);
+
       await updateTransactionProof(token, transactionId, {
-        proofPaymentUrl: proofUrl,
+        proofPaymentUrl: uploadedUrl,
       });
 
       alert("Proof uploaded successfully");
@@ -127,13 +158,43 @@ export default function UploadProofPage() {
           Paste the link of your payment
         </p>
 
-        <input
-          type="text"
-          placeholder="https://example.com/payment-proof.jpg"
-          value={proofUrl}
-          onChange={(e) => setProofUrl(e.target.value)}
-          className="w-full border rounded-lg px-3 py-2 mb-6"
-        />
+        <div className="mb-6 flex items-center justify-between gap-3 rounded-lg border px-4 py-2">
+          <p className="truncate text-sm text-gray-500">
+            {proofFile ? proofFile.name : "No file chosen"}
+          </p>
+
+          <label
+            htmlFor="proof-upload"
+            className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+          >
+            Choose File
+          </label>
+
+          <input
+            id="proof-upload"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+
+              if (!file) return;
+
+              const maxSize = 1 * 1024 * 1024;
+
+              if (file.size > maxSize) {
+                setFileError("File size must be lower than 1 MB");
+                setProofFile(null);
+                return;
+              }
+
+              setFileError("");
+              setProofFile(file);
+            }}
+            className="hidden"
+          />
+        </div>
+
+        {fileError && <p className="mb-4 text-sm text-red-500">{fileError}</p>}
 
         <button
           onClick={handleSubmit}

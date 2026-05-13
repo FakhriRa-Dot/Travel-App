@@ -14,7 +14,6 @@ export default function MyTransactionsPage() {
 
   const perPage = 10;
 
-  // urutkan transaksi dari terbaru
   const sortedTransactions = [...transactions].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
